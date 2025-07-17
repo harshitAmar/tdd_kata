@@ -22,6 +22,10 @@ void main() {
     test("consider /n as comma", () {
       expect(calculator.add("2\n3,8"), equals(13));
     });
+
+    test("consider /n as comma", () {
+      expect(calculator.add("2\n3,8\n3,89"), equals(105));
+    });
     test("Throw exception for float values", () {
       expect(
         () => calculator.add("5.0"),
