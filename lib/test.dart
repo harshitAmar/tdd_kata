@@ -3,18 +3,21 @@ import 'package:test/test.dart';
 
 void main() {
   group('Calculator', () {
+    final calculator = Calculator();
+
     test("Handle empty string", () {
-      final calculator = Calculator();
       expect(calculator.add(""), equals(0));
     });
 
     test("Convert single integer string to int", () {
-      final calculator = Calculator();
       expect(calculator.add("5"), equals(5));
     });
 
+    test("Add comma sepearted value", () {
+      expect(calculator.add("2,3"), equals(5));
+    });
+
     test("Throw exception for float values", () {
-      final calculator = Calculator();
       expect(
         () => calculator.add("5.0"),
         throwsA(predicate((e) =>
@@ -23,7 +26,6 @@ void main() {
       );
     });
     test("Throw exception for string values", () {
-      final calculator = Calculator();
       expect(
         () => calculator.add("tttt"),
         throwsA(predicate((e) =>

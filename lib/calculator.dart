@@ -11,6 +11,18 @@ class Calculator {
       if (num.tryParse(numbers) != null) {
         throw Exception("float values are not considered");
       } else {
+        List<String> values = numbers.split(",");
+
+        if (values.length > 1) {
+          int valueToReturn = 0;
+          for (var v in values) {
+            valueToReturn += int.parse(v);
+          }
+          return valueToReturn;
+        }
+      }
+
+      {
         throw Exception("string is not considered");
       }
     }
