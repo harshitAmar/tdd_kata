@@ -17,7 +17,10 @@ void main() {
       expect(calculator.add("2,3"), equals(5));
     });
     test("expect more than two values", () {
-      expect(calculator.add("2,3,8"), equals(13));
+      expect(calculator.add("2,3,95"), equals(100));
+    });
+    test("consider /n as comma", () {
+      expect(calculator.add("2\n3,8"), equals(13));
     });
     test("Throw exception for float values", () {
       expect(
