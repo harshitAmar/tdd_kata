@@ -13,6 +13,10 @@ void main() {
         Calculator calculator = Calculator();
         expect(calculator.add("5"), equals(5));
       });
+      test("Convert the numbers in string to integer", () {
+        Calculator calculator = Calculator();
+        expect(calculator.add("5.0"), equals(5));
+      });
     },
   );
 }
