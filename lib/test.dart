@@ -22,5 +22,14 @@ void main() {
             e.toString() == 'Exception: float values are not considered')),
       );
     });
+    test("Throw exception for string values", () {
+      final calculator = Calculator();
+      expect(
+        () => calculator.add("tttt"),
+        throwsA(predicate((e) =>
+            e is Exception &&
+            e.toString() == 'Exception: string is not considered')),
+      );
+    });
   });
 }

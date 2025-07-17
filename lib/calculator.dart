@@ -8,7 +8,11 @@ class Calculator {
     if (valueToReturn != null) {
       return valueToReturn;
     } else {
-      throw Exception("float values are not considered");
+      if (num.tryParse(numbers) != null) {
+        throw Exception("float values are not considered");
+      } else {
+        throw Exception("string is not considered");
+      }
     }
   }
 }
