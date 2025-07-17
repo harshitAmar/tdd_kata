@@ -12,8 +12,14 @@ class Calculator {
         throw Exception("float values are not considered");
       } else {
         try {
-          numbers = numbers.replaceAll("\n", ",");
-          List<String> values = numbers.split(",");
+          String delimeter = ",";
+
+          if (numbers.startsWith("//")) {
+            delimeter = numbers[2];
+            numbers = numbers.substring(3);
+          }
+          numbers = numbers.replaceAll("\n", delimeter);
+          List<String> values = numbers.split(delimeter);
           if (values.length > 1) {
             int valueToReturn = 0;
             for (var v in values) {
@@ -24,9 +30,16 @@ class Calculator {
             throw Exception("string is not considered");
           }
         } catch (e) {
+          print("$e");
           throw Exception("string is not considered");
         }
       }
     }
   }
+}
+
+void main(List<String> args) {
+  final calculator = Calculator();
+
+  calculator.add("//*2\n3*8\n3*89");
 }
