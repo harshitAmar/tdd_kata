@@ -3,6 +3,12 @@ class Calculator {
     if (numbers.isEmpty) {
       return 0;
     }
-    return int.tryParse(numbers) ?? double.parse(numbers).round();
+    int? valueToReturn = int.tryParse(numbers);
+
+    if (valueToReturn != null) {
+      return valueToReturn;
+    } else {
+      throw Exception("float values are not considered");
+    }
   }
 }
