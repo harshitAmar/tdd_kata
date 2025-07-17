@@ -16,7 +16,9 @@ void main() {
     test("Add comma sepearted value", () {
       expect(calculator.add("2,3"), equals(5));
     });
-
+    test("expect more than two values", () {
+      expect(calculator.add("2,3,8"), equals(13));
+    });
     test("Throw exception for float values", () {
       expect(
         () => calculator.add("5.0"),
