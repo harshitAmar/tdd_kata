@@ -28,12 +28,12 @@ void main() {
     });
 
     test("custom delimeter", () {
-      expect(calculator.add("//*2\n3*8\n3*89"), equals(105));
+      expect(calculator.add("//*\n2*3*8*3*89"), equals(105));
     });
 
     test("print negative numbers", () {
       expect(
-        () => calculator.add("//|2\n3|8\n3|-89"),
+        () => calculator.add("//|\n2\n3|8\n3|-89"),
         throwsA(
           predicate(
             (e) =>
@@ -45,7 +45,7 @@ void main() {
     });
     test("print all negative numbers", () {
       expect(
-        () => calculator.add("//|2\n3|8\n3|-89|-7"),
+        () => calculator.add("//|\n2\n3|8\n3|-89|-7"),
         throwsA(
           predicate(
             (e) =>
@@ -74,18 +74,29 @@ void main() {
       );
     });
     test("newline and custom delimeter", () {
-      expect(calculator.add("//#2\n3#4"), equals(9));
+      expect(calculator.add("//#\n2\n3#4"), equals(9));
     });
     test("only delimeter", () {
       expect(
-          () => calculator.add("//|"),
-          throwsA(predicate((e) =>
-              e is Exception &&
-              e.toString().contains("string is not considered"))));
+        calculator.add("//|\n"),
+        equals(0),
+      );
     });
 
-    test("very large numbers", () {
-      expect(calculator.add("85200,6243"), equals(91443));
+    test("ignore values more than 1000", () {
+      expect(calculator.add("5,6243"), equals(5));
+    });
+    test("don't ignore 1000", () {
+      expect(calculator.add("5,1000"), equals(1005));
+    });
+    test("test on 1001", () {
+      expect(calculator.add("5,1001"), equals(5));
+    });
+    test("test on 999", () {
+      expect(calculator.add("5,999"), equals(1004));
+    });
+    test("Custom delimiter of any length", () {
+      expect(calculator.add("//[***]\n1***2***3"), equals(6));
     });
     test("negative and float values together", () {
       expect(
@@ -94,6 +105,90 @@ void main() {
               e is Exception &&
               (e.toString().contains("negative numbers") ||
                   e.toString().contains("float values")))));
+    });
+    test("Multiple single-char delimiters", () {
+      expect(calculator.add("//[*][%]\n1*2%3"), equals(6));
+    });
+
+    test("Multiple multi-char delimiters", () {
+      expect(calculator.add("//[***][%%]\n1***2%%3"), equals(6));
+    });
+
+    test("Multiple mixed delimiters", () {
+      expect(calculator.add("//[*][%%][#]\n1*2%%3#4"), equals(10));
+    });
+
+    test("Multiple delimiters with ignored large numbers", () {
+      expect(calculator.add("//[*][%]\n1*1001%2"), equals(3));
+    });
+
+    test("Multiple delimiters with negative values", () {
+      expect(
+        () => calculator.add("//[*][#]\n2*-4#3"),
+        throwsA(
+          predicate((e) =>
+              e is Exception &&
+              e.toString() == "Exception: negative numbers not allowed -4"),
+        ),
+      );
+    });
+    test("Delimiter with special regex characters", () {
+      expect(calculator.add("//[.*]\n1.*2.*3"), equals(6));
+    });
+
+    test("Multiple delimiters with special characters", () {
+      expect(calculator.add("//[+][^]\n1+2^3"), equals(6));
+    });
+
+    test("Multiple mixed-length delimiters", () {
+      expect(calculator.add("//[*][%%][#][&&&]\n1*2%%3#4&&&5"), equals(15));
+    });
+
+    test("Numbers with surrounding spaces", () {
+      expect(calculator.add(" 1 , 2 , 3 "), equals(6));
+    });
+
+    test("Delimiter with surrounding spaces", () {
+      expect(calculator.add("//[ * ]\n1 * 2 * 3"), equals(6));
+    });
+
+    test("Multiple delimiters and empty tokens", () {
+      expect(calculator.add("//[*][%]\n1**2%%3"), equals(6));
+    });
+
+    test("Custom delimiter and only large numbers", () {
+      expect(calculator.add("//[***]\n1001***2000***3000"), equals(0));
+    });
+
+    test("Custom delimiter with float and string mixed", () {
+      expect(
+        () => calculator.add("//[***]\n1***2.5***xyz"),
+        throwsA(predicate((e) =>
+            e is Exception &&
+            (e.toString().contains("float values") ||
+                e.toString().contains("string is not considered")))),
+      );
+    });
+
+    test("Only newlines in input", () {
+      expect(calculator.add("\n\n"), equals(0));
+    });
+
+    test("Single character delimiter with empty values", () {
+      expect(calculator.add("//;\n1;;2"), equals(3));
+    });
+
+    test("Large number between small numbers", () {
+      expect(calculator.add("1,1001,2"), equals(3));
+    });
+
+    test("Single negative number only", () {
+      expect(
+        () => calculator.add("-1"),
+        throwsA(predicate((e) =>
+            e is Exception &&
+            e.toString().contains("negative numbers not allowed -1"))),
+      );
     });
   });
 }
