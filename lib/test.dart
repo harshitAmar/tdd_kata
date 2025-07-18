@@ -78,10 +78,8 @@ void main() {
     });
     test("only delimeter", () {
       expect(
-        () => calculator.add("//|\n"),
-        throwsA(predicate((e) =>
-            e is Exception &&
-            e.toString().contains("string is not considered"))),
+        calculator.add("//|\n"),
+        equals(0),
       );
     });
 

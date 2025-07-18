@@ -4,17 +4,18 @@ class Calculator {
       return 0;
     }
 
-    List<String> delimiters = [","]; // default delimiter
-    final multiDelimiterPattern = RegExp(r"\[(.*?)\]");
+    List<String> delimiters = [","];
+    final multiCharDelimeterPattern = RegExp(r'\[([^\]]+)\]');
     final singleCharDelimiterPattern = RegExp(r"^//(.)\n");
 
     if (numbers.startsWith("//")) {
       final headerEnd = numbers.indexOf('\n');
       final header = numbers.substring(2, headerEnd);
 
-      final matches = multiDelimiterPattern.allMatches(header);
-      if (matches.isNotEmpty) {
-        delimiters = matches.map((m) => RegExp.escape(m.group(1)!)).toList();
+      final delimiterMatches = multiCharDelimeterPattern.allMatches(header);
+      if (delimiterMatches.isNotEmpty) {
+        delimiters =
+            delimiterMatches.map((m) => RegExp.escape(m.group(1)!)).toList();
       } else if (singleCharDelimiterPattern.hasMatch(numbers)) {
         final match = singleCharDelimiterPattern.firstMatch(numbers)!;
         delimiters = [RegExp.escape(match.group(1)!)];
@@ -23,16 +24,17 @@ class Calculator {
       numbers = numbers.substring(headerEnd + 1);
     }
 
-    // Only replace \n if we have a single-character delimiter
-    if (delimiters.length == 1 && delimiters[0].length == 1) {
-      numbers = numbers.replaceAll('\n', delimiters[0]);
-    }
+    delimiters.add('\n');
 
     final splitPattern = RegExp(delimiters.join("|"));
     List<String> values = numbers.split(splitPattern);
 
     List<int> negatives = [];
     int valueToReturn = 0;
+
+    if (values.length == 1 && values.first.trim().isEmpty) {
+      return 0;
+    }
 
     for (var v in values) {
       v = v.trim();
@@ -62,4 +64,9 @@ class Calculator {
 
     return valueToReturn;
   }
+}
+
+void main(List<String> args) {
+  var v = Calculator().add("//|\n2\n3|8\n3|-89|-7");
+  print(v);
 }
