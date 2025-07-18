@@ -73,5 +73,27 @@ void main() {
             e.toString() == 'Exception: string is not considered')),
       );
     });
+    test("newline and custom delimeter", () {
+      expect(calculator.add("//#2\n3#4"), equals(9));
+    });
+    test("only delimeter", () {
+      expect(
+          () => calculator.add("//|"),
+          throwsA(predicate((e) =>
+              e is Exception &&
+              e.toString().contains("string is not considered"))));
+    });
+
+    test("very large numbers", () {
+      expect(calculator.add("85200,6243"), equals(91443));
+    });
+    test("negative and float values together", () {
+      expect(
+          () => calculator.add("-2,3.5"),
+          throwsA(predicate((e) =>
+              e is Exception &&
+              (e.toString().contains("negative numbers") ||
+                  e.toString().contains("float values")))));
+    });
   });
 }
