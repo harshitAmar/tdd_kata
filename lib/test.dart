@@ -132,5 +132,63 @@ void main() {
         ),
       );
     });
+    test("Delimiter with special regex characters", () {
+      expect(calculator.add("//[.*]\n1.*2.*3"), equals(6));
+    });
+
+    test("Multiple delimiters with special characters", () {
+      expect(calculator.add("//[+][^]\n1+2^3"), equals(6));
+    });
+
+    test("Multiple mixed-length delimiters", () {
+      expect(calculator.add("//[*][%%][#][&&&]\n1*2%%3#4&&&5"), equals(15));
+    });
+
+    test("Numbers with surrounding spaces", () {
+      expect(calculator.add(" 1 , 2 , 3 "), equals(6));
+    });
+
+    test("Delimiter with surrounding spaces", () {
+      expect(calculator.add("//[ * ]\n1 * 2 * 3"), equals(6));
+    });
+
+    test("Multiple delimiters and empty tokens", () {
+      expect(calculator.add("//[*][%]\n1**2%%3"), equals(6));
+    });
+
+    test("Custom delimiter and only large numbers", () {
+      expect(calculator.add("//[***]\n1001***2000***3000"), equals(0));
+    });
+
+    test("Custom delimiter with float and string mixed", () {
+      expect(
+        () => calculator.add("//[***]\n1***2.5***xyz"),
+        throwsA(predicate((e) =>
+            e is Exception &&
+            (e.toString().contains("float values") ||
+                e.toString().contains("string is not considered")))),
+      );
+    });
+
+    test("Only newlines in input", () {
+      expect(calculator.add("\n\n"), equals(0));
+    });
+
+    test("Single character delimiter with empty values", () {
+      expect(calculator.add("//;\n1;;2"), equals(3));
+    });
+
+    test("Large number between small numbers", () {
+      expect(calculator.add("1,1001,2"), equals(3));
+    });
+
+    test("Single negative number only", () {
+      expect(
+        () => calculator.add("-1"),
+        throwsA(predicate((e) =>
+            e is Exception &&
+            e.toString().contains("negative numbers not allowed -1"))),
+      );
+    });
   });
 }
