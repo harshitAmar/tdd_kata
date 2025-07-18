@@ -43,6 +43,19 @@ void main() {
         ),
       );
     });
+    test("print all negative numbers", () {
+      expect(
+        () => calculator.add("//|2\n3|8\n3|-89|-7"),
+        throwsA(
+          predicate(
+            (e) =>
+                e is Exception &&
+                e.toString() ==
+                    ("Exception: negative numbers not allowed -89,-7"),
+          ),
+        ),
+      );
+    });
 
     test("Throw exception for float values", () {
       expect(

@@ -21,13 +21,19 @@ class Calculator {
         List<String> values = numbers.split(delimeter);
         if (values.length > 1) {
           int valueToReturn = 0;
+
+          List<int> negatives = [];
           for (var v in values) {
             int value = int.parse(v);
             if (value.isNegative) {
-              throw Exception("negative numbers not allowed $value");
+              negatives.add(value);
             } else {
               valueToReturn += value;
             }
+          }
+          if (negatives.isNotEmpty) {
+            throw Exception(
+                "negative numbers not allowed ${negatives.join(",")}");
           }
           return valueToReturn;
         } else {
