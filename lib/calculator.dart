@@ -24,6 +24,18 @@ class Calculator {
 
           List<int> negatives = [];
           for (var v in values) {
+            if (v.trim().isEmpty) {
+              throw Exception("string is not considered");
+            }
+
+            if (int.tryParse(v) == null) {
+              if (num.tryParse(v) != null) {
+                throw Exception("float values are not considered");
+              } else {
+                throw Exception("string is not considered");
+              }
+            }
+
             int value = int.parse(v);
             if (value.isNegative) {
               negatives.add(value);
