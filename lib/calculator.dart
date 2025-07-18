@@ -24,7 +24,7 @@ class Calculator {
           for (var v in values) {
             int value = int.parse(v);
             if (value.isNegative) {
-              throw Exception("negative numbers are not allowed");
+              throw Exception("negative numbers not allowed $value");
             } else {
               valueToReturn += value;
             }

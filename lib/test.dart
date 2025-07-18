@@ -31,14 +31,14 @@ void main() {
       expect(calculator.add("//*2\n3*8\n3*89"), equals(105));
     });
 
-    test("don't allow negative numbers", () {
+    test("print negative numbers", () {
       expect(
         () => calculator.add("//|2\n3|8\n3|-89"),
         throwsA(
           predicate(
             (e) =>
                 e is Exception &&
-                e.toString() == ("Exception: negative numbers are not allowed"),
+                e.toString() == ("Exception: negative numbers not allowed -89"),
           ),
         ),
       );
