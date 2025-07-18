@@ -31,6 +31,19 @@ void main() {
       expect(calculator.add("//*2\n3*8\n3*89"), equals(105));
     });
 
+    test("don't allow negative numbers", () {
+      expect(
+        () => calculator.add("//|2\n3|8\n3|-89"),
+        throwsA(
+          predicate(
+            (e) =>
+                e is Exception &&
+                e.toString() == ("Exception: negative numbers are not allowed"),
+          ),
+        ),
+      );
+    });
+
     test("Throw exception for float values", () {
       expect(
         () => calculator.add("5.0"),

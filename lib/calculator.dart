@@ -11,26 +11,26 @@ class Calculator {
       if (num.tryParse(numbers) != null) {
         throw Exception("float values are not considered");
       } else {
-        try {
-          String delimeter = ",";
+        String delimeter = ",";
 
-          if (numbers.startsWith("//")) {
-            delimeter = numbers[2];
-            numbers = numbers.substring(3);
-          }
-          numbers = numbers.replaceAll("\n", delimeter);
-          List<String> values = numbers.split(delimeter);
-          if (values.length > 1) {
-            int valueToReturn = 0;
-            for (var v in values) {
-              valueToReturn += int.parse(v);
+        if (numbers.startsWith("//")) {
+          delimeter = numbers[2];
+          numbers = numbers.substring(3);
+        }
+        numbers = numbers.replaceAll("\n", delimeter);
+        List<String> values = numbers.split(delimeter);
+        if (values.length > 1) {
+          int valueToReturn = 0;
+          for (var v in values) {
+            int value = int.parse(v);
+            if (value.isNegative) {
+              throw Exception("negative numbers are not allowed");
+            } else {
+              valueToReturn += value;
             }
-            return valueToReturn;
-          } else {
-            throw Exception("string is not considered");
           }
-        } catch (e) {
-          print("$e");
+          return valueToReturn;
+        } else {
           throw Exception("string is not considered");
         }
       }
@@ -41,5 +41,9 @@ class Calculator {
 void main(List<String> args) {
   final calculator = Calculator();
 
-  calculator.add("//*2\n3*8\n3*89");
+  try {
+    calculator.add("//|2\n3|8\n3|-89");
+  } catch (e) {
+    print(e.toString());
+  }
 }
