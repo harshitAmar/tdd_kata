@@ -4,35 +4,32 @@ class Calculator {
       return 0;
     }
 
-    String delimeter = ",";
-
-    final multiCharDelimiterPattern = RegExp(r"^//\[(.+?)\]\n");
+    List<String> delimiters = [","]; // default delimiter
+    final multiDelimiterPattern = RegExp(r"\[(.*?)\]");
     final singleCharDelimiterPattern = RegExp(r"^//(.)\n");
-    bool isMultiCharDelimiter = false;
 
     if (numbers.startsWith("//")) {
-      if (multiCharDelimiterPattern.hasMatch(numbers)) {
-        final match = multiCharDelimiterPattern.firstMatch(numbers)!;
-        delimeter = match.group(1)!;
-        numbers = numbers.substring(match.end);
-        isMultiCharDelimiter = true;
+      final headerEnd = numbers.indexOf('\n');
+      final header = numbers.substring(2, headerEnd);
+
+      final matches = multiDelimiterPattern.allMatches(header);
+      if (matches.isNotEmpty) {
+        delimiters = matches.map((m) => RegExp.escape(m.group(1)!)).toList();
       } else if (singleCharDelimiterPattern.hasMatch(numbers)) {
         final match = singleCharDelimiterPattern.firstMatch(numbers)!;
-        delimeter = match.group(1)!;
-        numbers = numbers.substring(match.end);
+        delimiters = [RegExp.escape(match.group(1)!)];
       }
+
+      numbers = numbers.substring(headerEnd + 1);
     }
 
-    if (numbers.trim().isEmpty) {
-      throw Exception("string is not considered");
+    // Only replace \n if we have a single-character delimiter
+    if (delimiters.length == 1 && delimiters[0].length == 1) {
+      numbers = numbers.replaceAll('\n', delimiters[0]);
     }
 
-// Only replace \n if the delimiter is single-character
-    if (!isMultiCharDelimiter) {
-      numbers = numbers.replaceAll("\n", delimeter);
-    }
-
-    List<String> values = numbers.split(delimeter);
+    final splitPattern = RegExp(delimiters.join("|"));
+    List<String> values = numbers.split(splitPattern);
 
     List<int> negatives = [];
     int valueToReturn = 0;

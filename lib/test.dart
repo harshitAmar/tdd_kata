@@ -108,5 +108,31 @@ void main() {
               (e.toString().contains("negative numbers") ||
                   e.toString().contains("float values")))));
     });
+    test("Multiple single-char delimiters", () {
+      expect(calculator.add("//[*][%]\n1*2%3"), equals(6));
+    });
+
+    test("Multiple multi-char delimiters", () {
+      expect(calculator.add("//[***][%%]\n1***2%%3"), equals(6));
+    });
+
+    test("Multiple mixed delimiters", () {
+      expect(calculator.add("//[*][%%][#]\n1*2%%3#4"), equals(10));
+    });
+
+    test("Multiple delimiters with ignored large numbers", () {
+      expect(calculator.add("//[*][%]\n1*1001%2"), equals(3));
+    });
+
+    test("Multiple delimiters with negative values", () {
+      expect(
+        () => calculator.add("//[*][#]\n2*-4#3"),
+        throwsA(
+          predicate((e) =>
+              e is Exception &&
+              e.toString() == "Exception: negative numbers not allowed -4"),
+        ),
+      );
+    });
   });
 }
