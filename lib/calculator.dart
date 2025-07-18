@@ -8,23 +8,32 @@ class Calculator {
 
     final multiCharDelimiterPattern = RegExp(r"^//\[(.+?)\]\n");
     final singleCharDelimiterPattern = RegExp(r"^//(.)\n");
+    bool isMultiCharDelimiter = false;
 
     if (numbers.startsWith("//")) {
       if (multiCharDelimiterPattern.hasMatch(numbers)) {
         final match = multiCharDelimiterPattern.firstMatch(numbers)!;
-        delimeter = RegExp.escape(match.group(1)!);
+        delimeter = match.group(1)!;
         numbers = numbers.substring(match.end);
+        isMultiCharDelimiter = true;
       } else if (singleCharDelimiterPattern.hasMatch(numbers)) {
         final match = singleCharDelimiterPattern.firstMatch(numbers)!;
-        delimeter = RegExp.escape(match.group(1)!);
+        delimeter = match.group(1)!;
         numbers = numbers.substring(match.end);
       }
     }
+
     if (numbers.trim().isEmpty) {
       throw Exception("string is not considered");
     }
-    numbers = numbers.replaceAll("\n", delimeter);
-    List<String> values = numbers.split(RegExp(delimeter));
+
+// Only replace \n if the delimiter is single-character
+    if (!isMultiCharDelimiter) {
+      numbers = numbers.replaceAll("\n", delimeter);
+    }
+
+    List<String> values = numbers.split(delimeter);
+
     List<int> negatives = [];
     int valueToReturn = 0;
 
